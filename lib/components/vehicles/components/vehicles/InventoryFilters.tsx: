@@ -1,0 +1,42 @@
+// components/vehicles/InventoryFilters.tsx
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+
+export default function InventoryFilters() {
+  const router = useRouter();
+  const params = useSearchParams();
+
+  const [make, setMake] = useState(params.get('make') ?? '');
+  const [model, setModel] = useState(params.get('model') ?? '');
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      const sp = new URLSearchParams(params.toString());
+      make ? sp.set('make', make) : sp.delete('make');
+      model ? sp.set('model', model) : sp.delete('model');
+      router.push(`/inventory?${sp.toString()}`);
+    }, 400);
+    return () => clearTimeout(timeout);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [make, model]);
+
+  return (
+    <div className="flex flex-wrap gap-3 rounded-xl border bg-white p-4">
+      <input
+        value={make}
+        onChange={(e) => setMake(e.target.value)}
+        placeholder="Make (Toyota, Honda...)"
+        className="h-9 rounded border px-3 text-sm"
+      />
+      <input
+        value={model}
+        onChange={(e) => setModel(e.target.value)}
+        placeholder="Model"
+        className="h-9 rounded border px-3 text-sm"
+      />
+      {/* ඔයල්ලට පස්සේ price/year sliders වගේ filters add කරන්න පුළුවන් */}
+    </div>
+  );
+}
